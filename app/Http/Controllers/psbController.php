@@ -39,7 +39,7 @@ class psbController extends Controller
     public function store(Request $request)
     {
         $psbs = new psb;
-         $this->validate($request, [
+        $this->validate($request, [
                  'nama'=>'required|unique:psbs',
                  'no_induk'=>'required|unique:psbs',
                  'minat'=>'required',
@@ -81,7 +81,7 @@ class psbController extends Controller
     public function show($id)
     {
         $item = DB::table('psbs')
-                ->join('detail_siswas', 'psbs.nama', '=', 'detail_siswas.nama')
+                ->join('detail_siswas', 'psbs.id', '=', 'detail_siswas.id')
                 ->where('psbs.id', '=', $id)
                 ->first();
                 // dd($item);
@@ -98,7 +98,7 @@ class psbController extends Controller
     public function edit($id)
     {
         $item = DB::table('psbs')
-                ->join('detail_siswas', 'psbs.nama', '=', 'detail_siswas.nama')
+                ->join('detail_siswas', 'psbs.id', '=', 'detail_siswas.id')
                 ->where('psbs.id', '=', $id)
                 ->first();
                 // dd($item);
@@ -114,31 +114,61 @@ class psbController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $item = DB::table('psbs')
-                ->join('detail_siswas', 'psbs.nama', '=', 'detail_siswas.nama')
-                ->where('psbs.id', '=', $id)
-                ->first();
-         $this->validate($request, [
-                 'nama'=>'required',
-                 'no_induk'=>'required',
-                 'minat'=>'required',
-                 'jenkel'=>'required',
-                 'email'=>'required',
-                 'alamat'=>'required',
-             ]);
-        $item->nama = $request->nama;
-        $item->no_induk = $request->no_induk;
-        $item->TTL = $request->TTL;
-        $item->asal_smp = $request->asal_smp;
-        $item->nm_ayah = $request->nm_ayah;
-        $item->nm_ibu = $request->nm_ibu;
-        $item->minat = $request->minat;
-        $item->jenkel = $request->jenkel;
-        $item->email = $request->email;
-        $item->alamat = $request->alamat;
-        $item->save();
+        //data1
+        $psbs = psb::find($id);
+        $this->validateInput($request);
+        $input = [
+                 'nama'     =>$request['nama'],
+                 'no_induk' =>$request['no_induk'],
+                 'minat'    =>$request['minat'],
+                 'jenkel'   =>$request['jenkel'],
+                 'email'    =>$request['email'],
+                 'alamat'   =>$request['alamat'],
+             ];
+
+        DB::table('psbs')
+            ->where('id',$id)
+            ->update($input);
+            // dd($input);
+
+            //data 2
+        $detail_siswas = detailSiswa::find($id);
+        $this->validateInput($request);
+        $inputdetail = [
+            'nama'      =>$request['nama'],
+            'TTL'       =>$request['TTL'],
+            'asal_smp'  =>$request['asal_smp'],
+            'nm_ayah'   =>$request['nm_ayah'],
+            'nm_ibu'    =>$request['nm_ibu'],
+             ];
+
+        DB::table('detail_siswas')
+            ->where('id',$id)
+            ->update($inputdetail);
+            // dd($inputdetail);
+
+        //  $this->validate($request, [
+        //          'nama'=>'required',
+        //          'no_induk'=>'required',
+        //          'minat'=>'required',
+        //          'jenkel'=>'required',
+        //          'email'=>'required',
+        //          'alamat'=>'required',
+        //      ]);
+        // $item->nama = $request->nama;
+        // $item->no_induk = $request->no_induk;
+        // $item->TTL = $request->TTL;
+        // $item->asal_smp = $request->asal_smp;
+        // $item->nm_ayah = $request->nm_ayah;
+        // $item->nm_ibu = $request->nm_ibu;
+        // $item->minat = $request->minat;
+        // $item->jenkel = $request->jenkel;
+        // $item->email = $request->email;
+        // $item->alamat = $request->alamat;
+        // $item->save();
+
         session()->flash('message', 'Edit Siswa Berhasil');
-        return redirect('psb');
+        return redirect('/psb');
     }
 
     /**
@@ -155,5 +185,20 @@ class psbController extends Controller
             ->delete();
         session()->flash('message', 'Hapus Data Berhasil');
         return redirect('/psb');
+    }
+    private function validateInput($request)
+    {
+        $this->validate($request,[
+            'nama'      =>'required',
+            'no_induk'  =>'required',
+            'minat'     =>'required',
+            'jenkel'    =>'required',
+            'email'     =>'required',
+            'alamat'    =>'required',
+            'TTL'       =>'required',
+            'asal_smp'  =>'required',
+            'nm_ayah'   =>'required',
+            'nm_ibu'    =>'required',
+            ]);
     }
 }

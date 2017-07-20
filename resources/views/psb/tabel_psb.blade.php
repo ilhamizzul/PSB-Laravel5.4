@@ -7,7 +7,13 @@
 	@endif
 	<div class="col-lg-10 col-lg-offset-1">
 	<center><h1>Tabel Siswa Baru</h1></center>
-	<a href="/psb/create" class="glyphicon glyphicon-plus btn btn-info pull-right"></a>
+	<a href="/psb/create" class="glyphicon glyphicon-plus btn btn-info pull-left"></a>
+	<div class="input-group col-lg-2 pull-right">
+    	<input type="text" class="form-control">
+    	<span class="input-group-btn">
+    	  <button class="btn btn-default glyphicon glyphicon-search" type="button"></button>
+    	</span>
+  	</div>
 	    <table class="table table-striped table-hover ">
 	  <thead>
 	    <tr>
@@ -31,9 +37,9 @@
 	  			<a href="{{'/psb/'.$psb->id}}" class="glyphicon glyphicon-list-alt btn btn-info col-lg-4"></a>
         		<a href="{{'/psb/'.$psb->id.'/edit/'}}" class="btn btn-success col-lg-4 glyphicon glyphicon-edit"></a>
         		<form action="{{'/psb/'.$psb->id}}" method="post">
-        		{{method_field('DELETE')}}
-        		{{csrf_field()}}
-        		<button type="submit" class="glyphicon glyphicon-trash btn btn-danger col-lg-4"></button>
+        			{{method_field('DELETE')}}
+        			{{csrf_field()}}
+        			<button type="submit" class="glyphicon glyphicon-trash btn btn-danger col-lg-4"></button>
         		</form>
 	  		</th>
 	  	</tr>
